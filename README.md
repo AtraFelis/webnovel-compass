@@ -8,6 +8,22 @@ AI 기반 웹소설 추천 시스템 (Personalized Novel Recommendation System)
 ### 프로젝트 목표
 사용자 취향을 분석하여 개인화된 웹소설을 추천하는 시스템을 개발합니다. 협업 필터링과 콘텐츠 기반 필터링을 결합한 하이브리드 추천 알고리즘을 Python으로 구현하고, 이를 마이크로서비스로 구성하여 Spring Boot 백엔드와 연동하는 확장 가능한 아키텍처를 구축합니다.
 
+### 프로젝트 구조
+
+```
+webnovel-compass/
+├── backend/           # Spring Boot 백엔드 API
+├── frontend/          # React/Vue 프론트엔드
+├── recommender/       # Python FastAPI 추천 서비스
+├── database/          # DB 스키마 및 마이그레이션
+├── docker/           # Docker 관련 파일들
+├── docs/             # 프로젝트 문서
+├── scripts/          # 유틸리티 스크립트
+├── config/           # 설정 파일들
+├── tests/            # 통합 테스트
+└── README.md
+```
+
 ### 기술 스택
 - **추천 엔진**: Python (FastAPI, scikit-learn, pandas, numpy)
 - **백엔드**: Spring Boot (Java)

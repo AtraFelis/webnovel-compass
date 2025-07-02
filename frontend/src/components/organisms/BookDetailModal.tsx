@@ -5,7 +5,7 @@ import { PLATFORMS } from "@/utils/constants";
 import { MagicalStars } from "../atoms/MagicalStars";
 
 interface BookDetailModalProps {
-  book: WebNovel;
+  book: WebNovel | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -15,7 +15,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen || !book) return null;
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {

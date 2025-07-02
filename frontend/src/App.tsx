@@ -1,39 +1,19 @@
-import { useState } from "react";
-import { Book } from "lucide-react";
+import React from "react";
+import { AppProvider } from "./contexts/AppContext";
 import { Header } from "./components/organisms/Header";
+import { MobileNavigation } from "./components/organisms/Navigation";
 import { SearchBar } from "./components/molecules/SearchBar";
-import { MagicalBookCard } from "./components/organisms/BookCard";
+import { HeroSection } from "./components/molecules/HeroSection";
+import { BookCard } from "./components/organisms/BookCard";
 import { MagicalStars } from "./components/atoms/MagicalStars";
 import { BookDetailModal } from "./components/organisms/BookDetailModal";
-import type { WebNovel } from "./types";
-import { mockBooks } from "./utils/constants";
+import { useBooks, useSearch, useModal } from "./hooks";
 
-function App() {
-  const [selectedBook, setSelectedBook] = useState<WebNovel | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredBooks, setFilteredBooks] = useState(mockBooks);
-
-  const handleBookClick = (book: WebNovel) => {
-    setSelectedBook(book);
-    console.log("클릭된 책:", book.title);
-  };
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query.trim() === "") {
-      setFilteredBooks(mockBooks);
-    } else {
-      const filtered = mockBooks.filter(
-        (book) =>
-          book.title.toLowerCase().includes(query.toLowerCase()) ||
-          book.author.toLowerCase().includes(query.toLowerCase()) ||
-          book.genre.some((genre) =>
-            genre.toLowerCase().includes(query.toLowerCase())
-          )
-      );
-      setFilteredBooks(filtered);
-    }
-  };
+// 메인 앱 컴포넌트 (Context 내부)
+const AppContent: React.FC = () => {
+  const { filteredBooks } = useBooks();
+  const { handleSearch } = useSearch();
+  const { openModal, isOpen, selectedBook, closeModal } = useModal();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 relative overflow-hidden">
@@ -44,48 +24,59 @@ function App() {
       <Header />
 
       {/* 검색바 */}
-      <SearchBar onSearch={handleSearch} />
+      <div data-search-section>
+        <SearchBar onSearch={handleSearch} />
+      </div>
+      
+      {/* 히어로 섹션 */}
+      <HeroSection />
 
-      {/* 메인 콘텐츠 */}
-      <main className="p-6">
-        <div className="max-w-4xl mx-auto relative z-10">
-          <h2 className="text-xl font-bold text-purple-700 mb-4">
-            <Book className="w-5 h-5 lg:w-6 lg:h-6 mr-2 inline-block text-current" />
-            {searchQuery
-              ? `검색 결과 (${filteredBooks.length}개)`
-              : "추천 웹소설"}
+      {/* 책 그리드 */}
+      <div className="relative z-10 px-6 pb-8 md:pb-8 pb-20">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl font-bold text-purple-700 mb-6 flex items-center gap-2">
+            추천 도서
           </h2>
-          {filteredBooks.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredBooks.map((book) => (
-                <MagicalBookCard
-                  key={book.id}
-                  book={book}
-                  onClick={handleBookClick}
-                />
-              ))}
-            </div>
-          ) : (
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {filteredBooks.map((book) => (
+              <BookCard key={book.id} book={book} onClick={openModal} />
+            ))}
+          </div>
+
+          {/* 검색 결과 없음 */}
+          {filteredBooks.length === 0 && (
             <div className="text-center py-12">
-              <div className="text-gray-400 text-lg mb-2">📚</div>
-              <p className="text-gray-500 text-lg font-medium">
-                검색 결과가 없습니다
+              <p className="text-purple-600 text-lg mb-2">
+                🔍 검색 결과가 없습니다
               </p>
-              <p className="text-gray-400 text-sm mt-2">
+              <p className="text-purple-500 text-sm">
                 다른 키워드로 검색해보세요
               </p>
             </div>
           )}
         </div>
-      </main>
+      </div>
 
       {/* 책 상세 모달 */}
       <BookDetailModal
-        book={selectedBook!}
-        isOpen={selectedBook !== null}
-        onClose={() => setSelectedBook(null)}
+        book={selectedBook}
+        isOpen={isOpen}
+        onClose={closeModal}
       />
+      
+      {/* 모바일 하단 네비게이션 */}
+      <MobileNavigation />
     </div>
+  );
+};
+
+// 메인 App 컴포넌트 (Context Provider 포함)
+function App() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }
 

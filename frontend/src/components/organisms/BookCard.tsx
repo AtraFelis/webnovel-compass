@@ -3,19 +3,16 @@ import { Star, Sparkles } from "lucide-react";
 import type { WebNovel } from "@/types";
 import { PLATFORMS } from "@/utils/constants";
 
-interface MagicalBookCardProps {
+interface BookCardProps {
   book: WebNovel;
   onClick: (book: WebNovel) => void;
 }
 
-export const MagicalBookCard: React.FC<MagicalBookCardProps> = ({
-  book,
-  onClick,
-}) => {
+export const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
   const [logoError, setLogoError] = useState(false);
   return (
     <div
-      className="relative group cursor-pointer transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-200/50 rounded-xl overflow-hidden h-72"
+      className="relative group cursor-pointer transition-all duration-300 hover:transform hover:scale-105 hover:shadow-xl hover:shadow-purple-200/50 rounded-xl overflow-hidden aspect-[2/3]"
       onClick={() => onClick(book)}
       role="button"
       tabIndex={0}

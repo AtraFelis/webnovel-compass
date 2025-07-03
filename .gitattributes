@@ -1,0 +1,275 @@
+# 웹소설나침반 프로젝트 - Git 속성 설정
+# AI 기반 웹소설 추천 시스템
+
+# =============================================================================
+# 기본 설정 - 모든 파일 자동 줄바꿈 처리
+# =============================================================================
+* text=auto
+
+# =============================================================================
+# 프론트엔드 (React/TypeScript/JavaScript)
+# =============================================================================
+
+# JavaScript/TypeScript 파일들
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.mjs text eol=lf
+
+# JSON/설정 파일들
+*.json text eol=lf
+*.jsonc text eol=lf
+
+# CSS/스타일 파일들
+*.css text eol=lf
+*.scss text eol=lf
+*.sass text eol=lf
+*.less text eol=lf
+
+# HTML/템플릿 파일들
+*.html text eol=lf
+*.htm text eol=lf
+*.vue text eol=lf
+*.svelte text eol=lf
+
+# 설정 파일들
+*.eslintrc text eol=lf
+*.prettierrc text eol=lf
+*.babelrc text eol=lf
+tailwind.config.* text eol=lf
+vite.config.* text eol=lf
+webpack.config.* text eol=lf
+rollup.config.* text eol=lf
+
+# =============================================================================
+# 백엔드 (Java/Spring Boot)
+# =============================================================================
+
+# Java 파일들
+*.java text eol=lf
+*.kt text eol=lf
+*.scala text eol=lf
+*.groovy text eol=lf
+
+# 빌드 설정 파일들
+*.gradle text eol=lf
+*.gradle.kts text eol=lf
+gradle.properties text eol=lf
+gradlew text eol=lf
+*.pom text eol=lf
+pom.xml text eol=lf
+*.maven text eol=lf
+
+# Spring Boot 설정 파일들
+*.properties text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+application*.* text eol=lf
+bootstrap*.* text eol=lf
+
+# =============================================================================
+# Python (추천 서비스/FastAPI)
+# =============================================================================
+
+# Python 파일들
+*.py text eol=lf
+*.pyx text eol=lf
+*.pyi text eol=lf
+*.pyw text eol=lf
+
+# Python 설정 파일들
+*.cfg text eol=lf
+*.ini text eol=lf
+setup.py text eol=lf
+setup.cfg text eol=lf
+pyproject.toml text eol=lf
+requirements*.txt text eol=lf
+Pipfile text eol=lf
+poetry.lock text eol=lf
+*.pipfile text eol=lf
+
+# Jupyter Notebook (데이터 분석용)
+*.ipynb text eol=lf
+
+# =============================================================================
+# 데이터베이스 관련
+# =============================================================================
+
+# SQL 파일들
+*.sql text eol=lf
+*.ddl text eol=lf
+*.dml text eol=lf
+
+# 데이터베이스 마이그레이션
+*.flyway text eol=lf
+*.liquibase text eol=lf
+
+# =============================================================================
+# 인프라/배포 (Docker/Kubernetes)
+# =============================================================================
+
+# Docker 파일들
+Dockerfile* text eol=lf
+*.dockerfile text eol=lf
+docker-compose*.yml text eol=lf
+docker-compose*.yaml text eol=lf
+.dockerignore text eol=lf
+
+# Kubernetes 파일들
+*.k8s.yml text eol=lf
+*.k8s.yaml text eol=lf
+
+# =============================================================================
+# 문서 및 설정 파일들
+# =============================================================================
+
+# 마크다운 문서
+*.md text eol=lf
+*.markdown text eol=lf
+*.mdown text eol=lf
+*.mkd text eol=lf
+*.mdx text eol=lf
+
+# 텍스트 파일들
+*.txt text eol=lf
+*.log text eol=lf
+*.rtf text eol=lf
+
+# 설정 파일들
+*.conf text eol=lf
+*.config text eol=lf
+*.toml text eol=lf
+*.lock text eol=lf
+*.env text eol=lf
+*.env.* text eol=lf
+
+# Git 관련 파일들
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.gitmodules text eol=lf
+
+# CI/CD 파일들
+*.yml text eol=lf
+*.yaml text eol=lf
+.github/**/* text eol=lf
+
+# =============================================================================
+# 바이너리 파일들 (diff/merge 하지 않음)
+# =============================================================================
+
+# 이미지 파일들
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.webp binary
+*.bmp binary
+*.tiff binary
+
+# 폰트 파일들
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+
+# 압축 파일들
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.7z binary
+*.rar binary
+
+# Java 바이너리 파일들
+*.jar binary
+*.war binary
+*.ear binary
+*.class binary
+
+# 기타 바이너리 파일들
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.a binary
+*.lib binary
+*.o binary
+*.obj binary
+
+# 데이터 파일들 (큰 용량)
+*.csv binary
+*.xlsx binary
+*.xls binary
+*.db binary
+*.sqlite binary
+*.sqlite3 binary
+
+# =============================================================================
+# 언어 감지 제어 (GitHub 통계용)
+# =============================================================================
+
+# 생성된 파일들 - 언어 통계에서 제외
+dist/* linguist-generated=true
+build/* linguist-generated=true
+target/* linguist-generated=true
+out/* linguist-generated=true
+.next/* linguist-generated=true
+.nuxt/* linguist-generated=true
+
+# 의존성 디렉토리 - 외부 라이브러리로 분류
+node_modules/* linguist-vendored=true
+vendor/* linguist-vendored=true
+libs/* linguist-vendored=true
+third_party/* linguist-vendored=true
+
+# 문서 파일들 - 문서로 분류
+docs/* linguist-documentation=true
+*.md linguist-documentation=true
+
+# 테스트 파일들
+**/test/** linguist-detectable=false
+**/tests/** linguist-detectable=false
+**/__tests__/** linguist-detectable=false
+*.test.* linguist-detectable=false
+*.spec.* linguist-detectable=false
+
+# =============================================================================
+# 특별한 파일 처리
+# =============================================================================
+
+# Lock 파일들은 diff 표시하지 않음 (용량이 크고 자동 생성)
+package-lock.json -diff
+yarn.lock -diff
+Pipfile.lock -diff
+poetry.lock -diff
+Gemfile.lock -diff
+composer.lock -diff
+
+# 바이너리로 취급할 특별한 텍스트 파일들
+*.min.js binary
+*.min.css binary
+
+# =============================================================================
+# 머신러닝/AI 관련 (추천 시스템용)
+# =============================================================================
+
+# 모델 파일들
+*.pkl binary
+*.joblib binary
+*.h5 binary
+*.pb binary
+*.pth binary
+*.pt binary
+*.ckpt binary
+*.model binary
+
+# 데이터셋 파일들
+*.parquet binary
+*.feather binary
+*.hdf5 binary
+*.npz binary
+*.npy binary

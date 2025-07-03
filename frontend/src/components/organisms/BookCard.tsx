@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Star, Sparkles } from "lucide-react";
+import { Star } from "lucide-react";
 import type { WebNovel } from "@/types";
 import { PLATFORMS } from "@/utils/constants";
 
@@ -32,12 +32,6 @@ export const BookCard: React.FC<BookCardProps> = ({ book, onClick }) => {
 
       {/* 호버 시 추가 오버레이 */}
       <div className="absolute inset-0 bg-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-      {/* AI 추천 마법 배지 */}
-      <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg z-10">
-        <Sparkles className="w-3 h-3" />
-        AI 추천
-      </div>
 
       {/* 플랫폼 로고 배지 */}
       <div className="absolute top-2 left-2 w-6 h-6 z-10">

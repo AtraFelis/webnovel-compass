@@ -462,7 +462,6 @@ models/checkpoints/
 data/raw/
 data/processed/
 *.csv
-*.json
 *.parquet
 !data/sample/
 !data/schema/

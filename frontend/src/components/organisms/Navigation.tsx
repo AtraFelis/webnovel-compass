@@ -21,7 +21,7 @@ export const MobileNavigation: React.FC = () => {
   const { currentPage, setCurrentPage } = useAppContext();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t-2 border-purple-200 shadow-lg md:hidden z-40">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t-2 border-purple-200 shadow-lg md:hidden z-50">
       <div className="flex">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;

@@ -43,6 +43,7 @@ class SpringBootClient:
         except Exception as e:
             logger.error("사용자 조회 중 오류 발생", user_id=user_id, error=str(e))
             raise    
+        
     async def get_user_ratings(self, user_id: int) -> List[UserRating]:
         """사용자의 평점 목록 조회"""
         try:

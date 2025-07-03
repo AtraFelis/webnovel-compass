@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 # FastAPI 앱 생성
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="AI 기반 웹소설 추천 시스템",
+    description="AI 기반 웹소설 추천 시스템",   
     version=settings.VERSION,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     lifespan=lifespan

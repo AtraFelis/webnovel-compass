@@ -55,6 +55,7 @@ class RedisClient:
     ):
         """사용자 추천 결과 캐싱"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             key = f"rec:user:{user_id}"
             value = recommendations.model_dump_json()
@@ -69,6 +70,7 @@ class RedisClient:
     ) -> Optional[RecommendationResponse]:
         """사용자 추천 결과 캐시 조회"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             key = f"rec:user:{user_id}"
             cached_data = await self.redis_client.get(key)
@@ -87,6 +89,7 @@ class RedisClient:
     ):
         """유사 작품 목록 캐싱"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             key = f"similar:novel:{novel_id}"
             value = json.dumps(similar_novels, ensure_ascii=False)
@@ -101,6 +104,7 @@ class RedisClient:
     ) -> Optional[List[Dict[str, Any]]]:
         """유사 작품 목록 캐시 조회"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             key = f"similar:novel:{novel_id}"
             cached_data = await self.redis_client.get(key)
@@ -116,6 +120,7 @@ class RedisClient:
     async def store_novel_features(self, novel_id: int, features: NovelFeatures):
         """웹소설 특징 벡터 저장"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             key = f"features:novel:{novel_id}"
             value = features.model_dump_json()
@@ -128,6 +133,7 @@ class RedisClient:
     async def get_novel_features(self, novel_id: int) -> Optional[NovelFeatures]:
         """웹소설 특징 벡터 조회"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             key = f"features:novel:{novel_id}"
             cached_data = await self.redis_client.get(key)
@@ -142,6 +148,7 @@ class RedisClient:
     async def store_user_profile(self, user_id: int, profile: Dict[str, Any]):
         """사용자 취향 프로필 저장"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             key = f"profile:user:{user_id}"
             value = json.dumps(profile, ensure_ascii=False)
@@ -154,6 +161,7 @@ class RedisClient:
     async def get_user_profile(self, user_id: int) -> Optional[Dict[str, Any]]:
         """사용자 취향 프로필 조회"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             key = f"profile:user:{user_id}"
             cached_data = await self.redis_client.get(key)
@@ -169,6 +177,7 @@ class RedisClient:
     async def clear_user_cache(self, user_id: int):
         """특정 사용자의 모든 캐시 삭제"""
         await self._ensure_connected()
+        assert self.redis_client is not None
         try:
             pattern = f"*:user:{user_id}"
             keys = await self.redis_client.keys(pattern)
@@ -182,6 +191,7 @@ class RedisClient:
         """Redis 연결 상태 확인"""
         try:
             await self._ensure_connected()
+            assert self.redis_client is not None
             await self.redis_client.ping()
             return True
         except Exception as e:

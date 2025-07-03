@@ -12,7 +12,6 @@ api_router = APIRouter()
 api_router.include_router(
     recommendations_router,
     tags=["추천"]
-    # prefix 제거 - RESTful 경로를 위해
 )
 
 api_router.include_router(

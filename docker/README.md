@@ -5,7 +5,7 @@
 ### 1. **docker-compose.yml** - 기본 인프라
 - PostgreSQL 15 (포트: 5432)
 - Redis 7 (포트: 6379)  
-- PgAdmin (포트: 5050) - DB 관리 도구
+- PgAdmin (포트: 5050) - DB 관리 도구 (선택적)
 
 ### 2. **docker-compose.dev.yml** - 개발 환경
 - 기본 인프라 + 애플리케이션 서비스들
@@ -15,25 +15,78 @@
 - 보안 강화 및 리소스 제한
 - Nginx 리버스 프록시 포함
 
+## 🎛️ 서비스 옵션
+
+### `infra` - 기본 구성 (추천)
+- ✅ PostgreSQL + Redis만 실행
+- ✅ 빠른 시작, 적은 리소스 사용
+- ✅ 개발용으로 충분
+
+### `infra-full` - 전체 구성
+- ✅ PostgreSQL + Redis + PgAdmin
+- ✅ 웹 기반 DB 관리 도구 포함
+- ❌ 약간 더 많은 리소스 사용
+
 ## 🚀 빠른 시작
 
-### 1. 기본 인프라만 시작 (추천)
+### 방법 1: PowerShell 스크립트 (한글 출력 최적화 - 추천)
+```powershell
+# 기본 구성 (PostgreSQL + Redis)
+cd docker
+.\setup-docker.ps1 infra
+
+# 전체 구성 (PostgreSQL + Redis + PgAdmin)
+cd docker
+.\setup-docker.ps1 infra-full
+```
+
+### 방법 2: 배치 파일 (한글 출력 문제 해결됨)
 ```bash
-# Windows
+# 기본 구성 (PostgreSQL + Redis)
 cd docker
 setup-docker.bat infra
 
-# Linux/Mac
+# 전체 구성 (PostgreSQL + Redis + PgAdmin)
 cd docker
-chmod +x setup-docker.sh
-./setup-docker.sh infra
+setup-docker.bat infra-full
 ```
 
-### 2. 수동으로 시작
+### 방법 3: 수동으로 시작
 ```bash
 cd docker
 docker-compose up -d
 ```
+
+## 💡 한글 출력 문제 해결
+
+### 문제 증상
+- Windows 명령 프롬프트에서 한글이 깨져서 보임
+- `???` 또는 이상한 문자로 표시됨
+
+### 해결 방법
+
+#### 1. PowerShell 사용 (가장 추천)
+```powershell
+# 기본 구성으로 시작
+cd B:\workspace\webnovel-compass\docker
+.\setup-docker.ps1 infra
+
+# 또는 PgAdmin 포함한 전체 구성
+.\setup-docker.ps1 infra-full
+```
+
+#### 2. 명령 프롬프트 인코딩 수정
+```cmd
+# 명령 프롬프트에서 UTF-8로 변경
+chcp 65001
+
+# 그 다음 배치 파일 실행
+setup-docker.bat infra
+```
+
+#### 3. Windows Terminal 사용
+- Windows Terminal을 설치하여 사용하면 한글 출력이 완벽하게 지원됩니다
+- Microsoft Store에서 "Windows Terminal" 검색 후 설치
 
 ## 📊 접속 정보
 

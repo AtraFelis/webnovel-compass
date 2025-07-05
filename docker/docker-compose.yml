@@ -7,8 +7,8 @@ services:
     container_name: webnovel-compass-db
     environment:
       POSTGRES_DB: webnovel_compass
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: atrafelis
+      POSTGRES_PASSWORD: atrafelis
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     ports:
       - "5432:5432"

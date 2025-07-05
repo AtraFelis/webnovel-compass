@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     # 기본 설정
     PROJECT_NAME: str = "웹소설나침반 추천 서비스"
     VERSION: str = "0.1.0"
-    API_V1_STR: str = "/api/v1"
+    API_V1_STR: str = "/api/recommender/v1"
     
     # 서버 설정
     HOST: str = "0.0.0.0"
@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql://user:password@localhost:5432/webnovel_compass"
     
     # Redis 설정
-    REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_URL: str = "redis://localhost:6379"
     
     # Spring Boot 백엔드 연동
     BACKEND_API_URL: str = "http://localhost:8080"

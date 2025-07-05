@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # PostgreSQL 데이터베이스
@@ -7,8 +7,8 @@ services:
     container_name: webnovel-compass-db
     environment:
       POSTGRES_DB: webnovel_compass
-      POSTGRES_USER: webnovel_user
-      POSTGRES_PASSWORD: webnovel_password
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     ports:
       - "5432:5432"

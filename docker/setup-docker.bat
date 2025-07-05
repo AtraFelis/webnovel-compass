@@ -2,6 +2,14 @@
 REM 웹소설나침반 Docker 환경 설정 배치 파일 (Windows용)
 REM 사용법: setup-docker.bat [옵션]
 
+REM 한글 출력을 위한 코드페이지 설정 (UTF-8)
+chcp 65001 >nul 2>&1
+
+REM 콘솔 속성 설정 (한글 출력 개선)
+if exist "%WINDIR%\System32\mode.com" (
+    mode con: cols=120 lines=30 >nul 2>&1
+)
+
 setlocal enabledelayedexpansion
 
 REM 색상 설정을 위한 변수
@@ -74,7 +82,7 @@ if errorlevel 1 (
 )
 goto :eof
 
-REM 기본 인프라 서비스 시작
+REM 기본 인프라 서비스 시작 (PostgreSQL + Redis)
 :start_infrastructure
 call :log_info "기본 인프라 서비스 시작 중..."
 
@@ -93,6 +101,30 @@ if errorlevel 1 (
 )
 
 call :log_success "기본 인프라 서비스가 시작되었습니다."
+goto :eof
+
+REM 전체 인프라 서비스 시작 (PostgreSQL + Redis + PgAdmin)
+:start_full_infrastructure
+call :log_info "전체 인프라 서비스 시작 중 (PgAdmin 포함)..."
+
+docker-compose -f docker-compose.yml up -d postgres redis pgadmin
+
+call :log_info "PostgreSQL 준비 대기 중..."
+timeout /t 10 /nobreak >nul
+
+REM PostgreSQL 연결 테스트
+docker exec webnovel-compass-db pg_isready -U webnovel_user -d webnovel_compass >nul 2>&1
+if errorlevel 1 (
+    call :log_error "PostgreSQL 연결에 실패했습니다."
+    exit /b 1
+) else (
+    call :log_success "PostgreSQL이 준비되었습니다."
+)
+
+call :log_info "PgAdmin 준비 대기 중..."
+timeout /t 5 /nobreak >nul
+
+call :log_success "전체 인프라 서비스가 시작되었습니다."
 goto :eof
 
 REM 전체 개발 환경 시작
@@ -115,7 +147,14 @@ echo.
 call :log_info "접속 정보:"
 echo   - PostgreSQL: localhost:5432
 echo   - Redis: localhost:6379
-echo   - PgAdmin: http://localhost:5050 (admin@webnovelcompass.com / admin123)
+
+REM PgAdmin 실행 여부 확인
+docker-compose -f docker-compose.yml ps pgadmin | findstr "Up" >nul 2>&1
+if errorlevel 1 (
+    echo   - PgAdmin: 실행되지 않음 (infra-full 옵션으로 시작하면 사용 가능)
+) else (
+    echo   - PgAdmin: http://localhost:5050 (admin@webnovelcompass.com / admin123)
+)
 goto :eof
 
 REM 정리 함수
@@ -136,11 +175,16 @@ echo 사용법:
 echo   %~nx0 [옵션]
 echo.
 echo 옵션:
-echo   infra     기본 인프라만 시작 (PostgreSQL, Redis)
-echo   dev       전체 개발 환경 시작
-echo   status    서비스 상태 확인
-echo   cleanup   모든 컨테이너 및 볼륨 정리
-echo   help      이 도움말 출력
+echo   infra      기본 인프라만 시작 (PostgreSQL + Redis)
+echo   infra-full 전체 인프라 시작 (PostgreSQL + Redis + PgAdmin)
+echo   dev        전체 개발 환경 시작
+echo   status     서비스 상태 확인
+echo   cleanup    모든 컨테이너 및 볼륨 정리
+echo   help       이 도움말 출력
+echo.
+echo 예시:
+echo   %~nx0 infra      # 가벼운 구성 (추천)
+echo   %~nx0 infra-full # DB 관리 도구 포함
 goto :eof
 
 REM 메인 스크립트
@@ -156,6 +200,14 @@ if "%option%"=="infra" (
     call :setup_env_file
     call :create_network
     call :start_infrastructure
+    if errorlevel 1 exit /b 1
+    call :check_services
+) else if "%option%"=="infra-full" (
+    call :check_dependencies
+    if errorlevel 1 exit /b 1
+    call :setup_env_file
+    call :create_network
+    call :start_full_infrastructure
     if errorlevel 1 exit /b 1
     call :check_services
 ) else if "%option%"=="dev" (

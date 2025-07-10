@@ -1,0 +1,37 @@
+server:
+  port: 8082  # Content Service 포트
+
+spring:
+  application:
+    name: content-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/contentdb  # 다른 DB
+    username: webnovel
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Elasticsearch 설정 (나중에 활성화)
+#  elasticsearch:
+#    uris: http://localhost:9200
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

@@ -1,15 +1,75 @@
-version: "3.8"
-
 services:
+  # Infrastructure
+  eureka-server:
+    profiles: ["backend", "all"]
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+    mem_limit: 512m
+      
+  api-gateway:
+    profiles: ["backend", "all"]
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    mem_limit: 512m
+    depends_on:
+      - eureka-server
+      
+  # Microservices
+  user-service:
+    profiles: ["backend", "all"]
+    build: ./user-service
+    ports:
+      - "8081:8081"
+    mem_limit: 512m
+    depends_on:
+      - postgres
+      - eureka-server
+      
+  content-service:
+    profiles: ["backend", "all"]
+    build: ./content-service
+    ports:
+      - "8082:8082"
+    mem_limit: 512m
+    depends_on:
+      - postgres
+      - elasticsearch
+      - eureka-server
+      
+  analytics-service:
+    profiles: ["backend", "all"]
+    build: ./analytics-service
+    ports:
+      - "8083:8083"
+    mem_limit: 512m
+    depends_on:
+      - postgres
+      - redis
+      - eureka-server
+      
+  recommendation-service:
+    profiles: ["backend", "all"]
+    build: ./recommendation-service
+    ports:
+      - "8084:8084"
+    mem_limit: 512m
+    depends_on:
+      - postgres
+      - redis
+
   # PostgreSQL 데이터베이스
   postgres:
     image: postgres:15-alpine
+    profiles: ["database", "all"]
     container_name: webnovel-compass-db
     environment:
       POSTGRES_DB: webnovel_compass
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: atrafelis
+      POSTGRES_PASSWORD: atrafelis
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+      POSTGRES_MULTIPLE_DATABASES: userdb,contentdb,analyticsdb
     ports:
       - "5432:5432"
     volumes:
@@ -22,6 +82,7 @@ services:
   # Redis 캐시
   redis:
     image: redis:7-alpine
+    profiles: ["database", "all"]
     container_name: webnovel-compass-cache
     ports:
       - "6379:6379"
@@ -34,6 +95,7 @@ services:
   # PgAdmin (PostgreSQL 관리 도구)
   pgadmin:
     image: dpage/pgadmin4:latest
+    profiles: ["database", "all"]
     container_name: webnovel-compass-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@webnovelcompass.com
@@ -47,6 +109,18 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
+  
+    # Single Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    profiles: ["all"]
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ports:
+      - "9200:9200"
+    mem_limit: 512m
 
 volumes:
   postgres_data:

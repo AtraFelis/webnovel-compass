@@ -1,81 +1,254 @@
-# 웹소설나침반 프로젝트 폴더 구조
+# 웹소설나침반 - 마이크로서비스 프로젝트 폴더 구조
 
-## 📁 폴더별 역할
+## 📁 전체 프로젝트 구조
 
-### `/backend` - Spring Boot 백엔드 (API 게이트웨이)
-- Spring Boot 기반 REST API 게이트웨이
-- 사용자 관리, 웹소설 메타데이터 관리
-- 마이크로서비스 통합 및 라우팅
-- 인증/권한, 비즈니스 로직 처리
-- 서비스 간 통신 관리
+```
+webnovel-compass/
+├── microservices/             # 🎯 마이크로서비스들
+│   ├── eureka-server/         # 서비스 디스커버리
+│   ├── api-gateway/           # API 게이트웨이
+│   ├── user-service/          # 사용자 관리 서비스
+│   ├── content-service/       # 콘텐츠 관리 서비스
+│   ├── analytics-service/     # 분석 서비스
+│   └── recommendation-service/ # 추천 서비스 (Python)
+├── frontend/                  # React 프론트엔드
+├── docker/                    # Docker 관련 파일들
+├── database/                  # 데이터베이스 관련
+├── docs/                      # 프로젝트 문서
+├── scripts/                   # 유틸리티 스크립트
+├── config/                    # 설정 파일
+├── tests/                     # 통합 테스트
+└── README.md                  # 프로젝트 메인 문서
+```
 
-### `/frontend` - React/Vue 프론트엔드
-- 사용자 인터페이스 (UI/UX)
-- 추천 결과 표시 및 상호작용
-- 사용자 취향 설정 페이지
-- 반응형 웹 디자인
-- 관리자 대시보드 (크롤링 상태 모니터링)
+## 🏗️ 마이크로서비스별 역할
 
-### `/recommender` - Python 추천 마이크로서비스
-- FastAPI 기반 추천 전용 마이크로서비스
-- 협업 필터링 & 콘텐츠 기반 필터링 알고리즘
-- 머신러닝 모델 학습 및 추론
-- 실시간 추천 결과 생성 API
-- 추천 성능 최적화 및 캐싱
+### `/microservices/eureka-server` - 서비스 디스커버리
+- **기술 스택**: Spring Boot + Netflix Eureka
+- **포트**: 8761
+- **역할**: 
+  - 마이크로서비스 등록 및 발견
+  - 서비스 상태 모니터링
+  - 로드 밸런싱 지원
+- **의존성**: 없음 (가장 먼저 실행)
 
-### `/crawler` - Python 크롤링 마이크로서비스 ⭐ NEW
-- FastAPI + Scrapy 기반 데이터 수집 전용 서비스
-- 웹소설 메타데이터 크롤링 (카카오페이지 등)
-- 데이터 정제 및 검증 파이프라인
-- 스케줄링 및 배치 작업 관리
-- 크롤링 상태 모니터링 API
-- robots.txt 준수 및 정책 관리
+### `/microservices/api-gateway` - API 게이트웨이
+- **기술 스택**: Spring Boot + Spring Cloud Gateway
+- **포트**: 8080
+- **역할**:
+  - 클라이언트 요청 라우팅
+  - 인증/인가 중앙화
+  - Rate Limiting, Circuit Breaker
+  - 로깅 및 모니터링
+- **의존성**: Eureka Server
 
-### `/database` - 데이터베이스 관련
-- PostgreSQL 스키마 정의
-- 데이터베이스 마이그레이션 스크립트
-- 초기 데이터 (샘플 웹소설, 사용자 등)
-- 인덱스 및 성능 최적화 쿼리
-- 크롤링 데이터 스키마 추가
+### `/microservices/user-service` - 사용자 관리 서비스
+- **기술 스택**: Spring Boot + JPA + PostgreSQL
+- **포트**: 8081
+- **역할**:
+  - 사용자 인증/인가 (JWT)
+  - 회원가입, 로그인, 프로필 관리
+  - 사용자 취향 설정
+  - 소셜 로그인 연동
+- **데이터베이스**: userdb (PostgreSQL)
+- **의존성**: Eureka Server, PostgreSQL
+
+### `/microservices/content-service` - 콘텐츠 관리 서비스
+- **기술 스택**: Spring Boot + JPA + Elasticsearch
+- **포트**: 8082
+- **역할**:
+  - 웹소설 메타데이터 관리
+  - 평점/리뷰 시스템
+  - 검색 및 필터링
+  - 콘텐츠 통계 관리
+- **데이터베이스**: contentdb (PostgreSQL), Elasticsearch
+- **의존성**: Eureka Server, PostgreSQL, Elasticsearch
+
+### `/microservices/analytics-service` - 분석 서비스
+- **기술 스택**: Spring Boot + WebFlux + Redis
+- **포트**: 8083
+- **역할**:
+  - 사용자 행동 이벤트 수집 (10ms 이하)
+  - 실시간 스트림 처리
+  - 세션 관리 및 추적
+  - 통계 분석 및 리포팅
+- **데이터베이스**: analyticsdb (PostgreSQL), Redis
+- **이벤트**: Redis Pub/Sub
+- **의존성**: Eureka Server, PostgreSQL, Redis
+
+### `/microservices/recommendation-service` - 추천 서비스
+- **기술 스택**: Python + FastAPI + scikit-learn
+- **포트**: 8084
+- **역할**:
+  - AI 추천 알고리즘 (협업/콘텐츠 기반)
+  - 개인화 추천 생성
+  - 모델 학습 및 업데이트
+  - 추천 성능 측정
+- **데이터베이스**: PostgreSQL (모델 메타데이터), Redis (캐시)
+- **의존성**: PostgreSQL, Redis
+
+## 🔧 인프라 및 지원 폴더
+
+### `/frontend` - React 프론트엔드
+- **기술 스택**: React.js + TypeScript
+- **역할**:
+  - 사용자 인터페이스 (UI/UX)
+  - API Gateway를 통한 백엔드 통신
+  - 추천 결과 표시 및 상호작용
+  - 반응형 웹 디자인
 
 ### `/docker` - 컨테이너화
-- Docker Compose 설정 (4개 서비스)
-- 각 서비스별 Dockerfile
-- 개발/운영 환경별 설정
-- 마이크로서비스 오케스트레이션
-- 서비스 간 네트워크 구성
+- **파일 구성**:
+  ```
+  docker/
+  ├── docker-compose.yml        # 전체 서비스 오케스트레이션
+  ├── docker-compose.dev.yml    # 개발 환경 설정
+  ├── postgres-init/            # PostgreSQL 초기화 스크립트
+  │   ├── 01-create-databases.sql
+  │   └── 02-init-schema.sql
+  └── nginx/                    # 프론트엔드 배포용 (선택사항)
+      └── nginx.conf
+  ```
+- **역할**:
+  - 단일 명령어로 전체 환경 구성
+  - 개발/운영 환경별 설정 분리
+  - 네트워크 및 볼륨 관리
+
+### `/database` - 데이터베이스 관련
+- **구성**:
+  ```
+  database/
+  ├── migrations/               # DB 마이그레이션 스크립트
+  │   ├── user/                # User Service DB
+  │   ├── content/             # Content Service DB
+  │   └── analytics/           # Analytics Service DB
+  ├── seeds/                   # 초기 데이터
+  │   ├── sample-users.sql
+  │   ├── sample-novels.sql
+  │   └── sample-genres.sql
+  └── schemas/                 # ERD 및 스키마 문서
+      ├── user-service-erd.md
+      ├── content-service-erd.md
+      └── analytics-service-erd.md
+  ```
 
 ### `/docs` - 프로젝트 문서
-- API 문서 (Swagger/OpenAPI)
-- 시스템 아키텍처 문서
-- 마이크로서비스 통신 규격
-- 크롤링 가이드라인 및 정책
-- 개발 가이드라인
-- 배포 매뉴얼
+- **구성**:
+  ```
+  docs/
+  ├── architecture/            # 아키텍처 문서
+  │   ├── system-overview.md
+  │   ├── microservices-design.md
+  │   └── data-flow.md
+  ├── api/                     # API 문서
+  │   ├── user-service-api.md
+  │   ├── content-service-api.md
+  │   └── analytics-service-api.md
+  ├── deployment/              # 배포 가이드
+  │   ├── local-setup.md
+  │   └── docker-guide.md
+  └── requirements/            # 기존 요구사항 명세서들
+  ```
 
 ### `/scripts` - 유틸리티 스크립트
-- 개발환경 설정 스크립트
-- 데이터 수집/전처리 스크립트
-- 배포 자동화 스크립트
-- 성능 테스트 스크립트
-- 마이크로서비스 헬스체크 스크립트
+- **구성**:
+  ```
+  scripts/
+  ├── setup/                   # 환경 설정
+  │   ├── setup-dev.sh        # 개발 환경 설정
+  │   └── install-deps.sh     # 의존성 설치
+  ├── build/                   # 빌드 스크립트
+  │   ├── build-all.sh        # 전체 서비스 빌드
+  │   └── build-service.sh    # 개별 서비스 빌드
+  ├── data/                    # 데이터 관련
+  │   ├── import-novels.py    # 웹소설 데이터 수집
+  │   └── generate-test-data.py # 테스트 데이터 생성
+  └── deploy/                  # 배포 관련
+      ├── deploy.sh           # 배포 스크립트
+      └── health-check.sh     # 서비스 상태 확인
+  ```
 
 ### `/config` - 설정 파일
-- 환경별 설정 파일 (.env 템플릿)
-- 각 마이크로서비스별 설정
-- 로깅 설정
-- 보안 설정
-- 서비스 디스커버리 설정
+- **구성**:
+  ```
+  config/
+  ├── .env.template            # 환경변수 템플릿
+  ├── application-dev.yml      # 개발 환경 공통 설정
+  ├── application-prod.yml     # 운영 환경 공통 설정
+  └── logging/                 # 로깅 설정
+      ├── logback-dev.xml
+      └── logback-prod.xml
+  ```
 
 ### `/tests` - 통합 테스트
-- E2E 테스트
-- 마이크로서비스 간 통합 테스트
-- API 통합 테스트
-- 크롤링 테스트 (MockServer 활용)
-- 성능 테스트
-- 부하 테스트
+- **구성**:
+  ```
+  tests/
+  ├── integration/             # 통합 테스트
+  │   ├── user-service-test/
+  │   ├── content-service-test/
+  │   └── end-to-end-test/
+  ├── performance/             # 성능 테스트
+  │   ├── load-test/
+  │   └── stress-test/
+  └── contract/                # 계약 테스트 (Pact)
+      ├── user-content-contract/
+      └── analytics-recommendation-contract/
+  ```
 
-## 🏗️ 마이크로서비스 아키텍처 구조
+## 🚀 개발 순서
+
+### Phase 1: 기본 인프라 (1-2일)
+1. **Eureka Server** - 서비스 디스커버리 구축
+2. **API Gateway** - 기본 라우팅 설정
+3. **Docker Compose** - 기본 환경 구성
+
+### Phase 2: 핵심 서비스 (3-5일)
+4. **User Service** - 인증/사용자 관리
+5. **Content Service** - 웹소설 CRUD + 검색
+6. **서비스 간 통신** - REST API 연동
+
+### Phase 3: 고급 기능 (5-7일)
+7. **Analytics Service** - 이벤트 수집/분석
+8. **Recommendation Service** - AI 추천 알고리즘
+9. **이벤트 기반 통신** - Redis Pub/Sub
+
+### Phase 4: 통합 및 최적화 (2-3일)
+10. **Frontend 연동** - UI 구현
+11. **통합 테스트** - E2E 테스트
+12. **성능 최적화** - 캐싱, 모니터링
+
+## 📊 리소스 사용량 (단일 서버)
+
+```yaml
+메모리 사용량 (총 ~3.3GB):
+  - Eureka Server: ~300MB
+  - API Gateway: ~400MB
+  - User Service: ~500MB
+  - Content Service: ~600MB (Elasticsearch 연동)
+  - Analytics Service: ~500MB
+  - Recommendation Service: ~400MB (Python)
+  - PostgreSQL: ~500MB
+  - Redis: ~256MB
+  - Elasticsearch: ~500MB
+
+포트 사용:
+  - API Gateway: 8080 (외부 접근)
+  - Eureka Server: 8761
+  - User Service: 8081
+  - Content Service: 8082
+  - Analytics Service: 8083
+  - Recommendation Service: 8084
+  - PostgreSQL: 5432
+  - Redis: 6379
+  - Elasticsearch: 9200
+```
+
+---
+
+## 📌 참고: 아키텍처 개요 및 개발 우선순위
+
+### 🏗️ 마이크로서비스 아키텍처 구조 (다른 설계안)
 
 ```
 webnovel-compass/
@@ -92,7 +265,7 @@ webnovel-compass/
 └── README.md            ✅ 프로젝트 메인 문서
 ```
 
-## 🔄 서비스 간 통신 흐름
+### 🔄 서비스 간 통신 흐름
 
 ```
 [Frontend] 
@@ -107,24 +280,22 @@ webnovel-compass/
 [PostgreSQL + Redis]
 ```
 
-## 🚀 개발 우선순위
+### 🚀 개발 우선순위 (다른 설계안)
 
-### Phase 1: 기본 마이크로서비스 구축
+#### Phase 1: 기본 마이크로서비스 구축
 1. **크롤링 서비스**: 기본 FastAPI + 간단한 크롤러
 2. **추천 서비스**: 기본 협업 필터링 알고리즘
 3. **API 게이트웨이**: 서비스 라우팅 및 인증
 4. **데이터베이스**: 기본 스키마 및 테이블
 
-### Phase 2: 서비스 고도화
+#### Phase 2: 서비스 고도화
 1. **크롤링 서비스**: Scrapy 통합, 스케줄링
 2. **추천 서비스**: 하이브리드 알고리즘, 캐싱
 3. **프론트엔드**: 사용자 인터페이스 구축
 4. **모니터링**: 로깅 및 헬스체크
 
-### Phase 3: 운영 최적화
+#### Phase 3: 운영 최적화
 1. **성능 최적화**: 각 서비스별 튜닝
 2. **모니터링 강화**: 실시간 대시보드
 3. **자동화**: CI/CD 파이프라인
 4. **확장성**: 로드 밸런싱 및 스케일링
-
----

@@ -66,25 +66,6 @@ function Test-Dependencies {
     return $true
 }
 
-# 환경변수 파일 생성
-function Setup-EnvFile {
-    Log-Info "환경변수 파일 설정 중..."
-    
-    $envPath = "..\config\.env"
-    $templatePath = "..\config\.env.template"
-    
-    if (-not (Test-Path $envPath)) {
-        if (Test-Path $templatePath) {
-            Copy-Item $templatePath $envPath
-            Log-Success ".env 파일이 생성되었습니다. 필요시 값을 수정해주세요."
-        } else {
-            Log-Warning ".env.template 파일을 찾을 수 없습니다."
-        }
-    } else {
-        Log-Warning ".env 파일이 이미 존재합니다."
-    }
-}
-
 # 네트워크 생성
 function New-DockerNetwork {
     Log-Info "Docker 네트워크 생성 중..."
@@ -196,8 +177,8 @@ function Show-ServiceStatus {
 function Remove-DockerEnvironment {
     Log-Info "Docker 환경 정리 중..."
     
-    docker-compose -f docker-compose.yml down -v
-    docker-compose -f docker-compose.dev.yml down -v
+    docker-compose -f docker-compose.yml down
+    docker-compose -f docker-compose.dev.yml down
     
     Log-Success "Docker 환경이 정리되었습니다."
 }
@@ -230,21 +211,18 @@ try {
     switch ($Option) {
         "infra" {
             if (-not (Test-Dependencies)) { exit 1 }
-            Setup-EnvFile
             New-DockerNetwork
             if (-not (Start-Infrastructure)) { exit 1 }
             Show-ServiceStatus
         }
         "infra-full" {
             if (-not (Test-Dependencies)) { exit 1 }
-            Setup-EnvFile
             New-DockerNetwork
             if (-not (Start-FullInfrastructure)) { exit 1 }
             Show-ServiceStatus
         }
         "dev" {
             if (-not (Test-Dependencies)) { exit 1 }
-            Setup-EnvFile
             New-DockerNetwork
             if (-not (Start-DevEnvironment)) { exit 1 }
             Show-ServiceStatus

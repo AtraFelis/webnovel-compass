@@ -14,23 +14,30 @@ AI 기반 웹소설 추천 시스템 (Personalized Novel Recommendation System)
 
 ```
 webnovel-compass/
-├── backend/           # Spring Boot 백엔드 API
-├── frontend/          # React/Vue 프론트엔드
-├── recommender/       # Python FastAPI 추천 서비스
-├── database/          # DB 스키마 및 마이그레이션
-├── docker/           # Docker 관련 파일들
-├── docs/             # 프로젝트 문서
-├── scripts/          # 유틸리티 스크립트
-├── config/           # 설정 파일들
-├── tests/            # 통합 테스트
+├── microservices/             # 🎯 마이크로서비스들
+│   ├── eureka-server/         # 서비스 디스커버리 (Spring Boot)
+│   ├── api-gateway/           # API 게이트웨이 (Spring Boot)
+│   ├── user-service/          # 사용자 관리 서비스 (Spring Boot)
+│   ├── content-service/       # 콘텐츠 관리 서비스 (Spring Boot)
+│   ├── analytics-service/     # 분석 서비스 (Spring Boot)
+│   └── recommendation-service/ # 추천 서비스 (Python FastAPI)
+├── frontend/                  # React 프론트엔드
+├── docker/                    # Docker 관련 파일들
+├── database/                  # 데이터베이스 스키마 및 마이그레이션
+├── docs/                      # 프로젝트 문서
+├── scripts/                   # 유틸리티 스크립트
+├── config/                    # 설정 파일들
+├── tests/                     # 통합 테스트
 └── README.md
 ```
+
+> 📄 **상세 폴더 구조 및 각 서비스별 역할 설명은 `docs/folder-structure.md`를 참고하세요.**
 
 ### 기술 스택
 
 - **추천 엔진**: Python (FastAPI, scikit-learn, pandas, numpy)
 - **백엔드**: Spring Boot (Java)
-- **프론트엔드**: React/Vue.js
+- **프론트엔드**: React.js
 - **데이터베이스**: PostgreSQL (메인), Redis (캐싱)
 - **인프라**: Docker, Kubernetes (선택사항)
 
@@ -57,7 +64,7 @@ webnovel-compass/
 
 1. **추천 마이크로서비스** (Python FastAPI)
 2. **API 게이트웨이** (Spring Boot)
-3. **사용자 인터페이스** (React/Vue)
+3. **사용자 인터페이스** (React)
 4. **데이터 저장소** (PostgreSQL + Redis)
 
 ## 주요 기능 요구사항

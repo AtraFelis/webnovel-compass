@@ -498,3 +498,5 @@ docs/_build/
 *.exe
 *.out
 *.app
+
+.obsidian

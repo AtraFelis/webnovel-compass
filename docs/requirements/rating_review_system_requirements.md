@@ -370,7 +370,6 @@ review_helpfulness (
     review_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
     is_helpful BOOLEAN NOT NULL, -- true: 도움됨, false: 도움안됨
-    feedback_type ENUM('HELPFUL', 'FUNNY', 'AGREE') DEFAULT 'HELPFUL',
     created_at TIMESTAMP DEFAULT NOW(),
     
     UNIQUE KEY unique_user_review (user_id, review_id),
